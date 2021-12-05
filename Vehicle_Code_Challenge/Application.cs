@@ -14,8 +14,7 @@ namespace Vehicle_Code_Challenge
             Console.WriteLine("5. Sort by Manufacter/Model");
             Console.WriteLine("6. Exit");
             var choice = Console.ReadLine();
-            int x;
-            if (int.TryParse(choice, out x)) return x;
+            if (int.TryParse(choice, out int x)) return x;
             return 0;
         }
         public static List<IVehicle> getRandomList(List<IVehicle> list, int n)
@@ -24,16 +23,16 @@ namespace Vehicle_Code_Challenge
         }
         public static void Main()
         {
-            List<IVehicle> allCars = new List<IVehicle>();      //Holds all vehicles
-            List<IVehicle> currentSelection = new List<IVehicle>();     //Holds the current random selection of vehicles for sorting
+            List<IVehicle> allCars = new();      //Holds all vehicles
+            List<IVehicle> currentSelection = new();     //Holds the current random selection of vehicles for sorting
 
+            //Hardcoded base list of vehicles
             allCars.Add(new GasVehicle("White", "Ford", "F150", 2016, "Eight cylinders"));
             allCars.Add(new GasVehicle("Red", "BMW", "3 Series", 2020, "Six cylinders"));
             allCars.Add(new GasVehicle("Blue", "Hyundai", "Sonata", 2010, "Four cylinders"));
             allCars.Add(new GasVehicle("Green", "Subaru", "Impreza", 2018, "Six cylinders"));
             allCars.Add(new GasVehicle("Black", "Nissan", "GT-R", 2012, "Four cylinders"));
             allCars.Add(new GasVehicle("Yellow", "Mazda", "CX-8", 2021, "Eight cylinders"));
-
             allCars.Add(new ElectricVehicle("Red", "Tesla", "Model S", 2019, "Dual"));
             allCars.Add(new ElectricVehicle("Green", "BMW", "I3", 2020, "Single"));
             allCars.Add(new ElectricVehicle("Blue", "Nissan", "Leaf", 2016, "Single"));

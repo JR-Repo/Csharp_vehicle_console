@@ -14,7 +14,7 @@ namespace Vehicle_Code_Challenge
         public ElectricVehicle(string color, string manufacturer, string model, int yearBuilt, string motorType)
         {
             //ensures the year is not a future year and that engine size is in the list of acceptable values
-            if (yearBuilt > 2021)
+            if (yearBuilt > Globals.currentYear)
                 throw new ArgumentException("Cannot be a future year");
             if (!MotorTypes.Any(x => x == motorType))
                 throw new ArgumentException("Not a valid motor type");
