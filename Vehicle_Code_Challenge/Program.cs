@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 public static class Globals
 {
@@ -28,6 +27,7 @@ public class GasVehicle : IVehicle
 
     public GasVehicle ( string color, string manufacturer, string model, int yearBuilt, string engineSize )
     {
+        //ensures the year is not a future year and that motor type is in the list of acceptable values
         if (yearBuilt > Globals.currentYear)
             throw new ArgumentException("Cannot be a future year");
         if (!EngineSizes.Any(x => x == engineSize))
@@ -59,6 +59,7 @@ public class GasVehicle : IVehicle
         }
         set
         {
+            //checks that the engine size being set is in the list of acceptable values
             if (!EngineSizes.Any(x => x == value))
                 throw new ArgumentException("Not a valid engine size");
             _engineSize = value;
@@ -88,6 +89,7 @@ public class ElectricVehicle : IVehicle
 
     public ElectricVehicle(string color, string manufacturer, string model, int yearBuilt, string motorType)
     {
+        //ensures the year is not a future year and that engine size is in the list of acceptable values
         if (yearBuilt > 2021)
             throw new ArgumentException("Cannot be a future year");
         if (!MotorTypes.Any(x => x == motorType))
@@ -119,6 +121,7 @@ public class ElectricVehicle : IVehicle
         }
         set
         {
+            //checks that the motor type being set is in the list of acceptable values
             if (!MotorTypes.Any(x => x == value))
                 throw new ArgumentException("Not a valid motor type");
             _motorType = value;
@@ -139,14 +142,9 @@ public class ElectricVehicle : IVehicle
 
 class Application
 {
-    //object[] getNewList()
-    //{
-    //    return { }
-    //}
-    static public int Menu()
+    public static int Menu()
     {
-        Console.WriteLine("Vehicles");
-        Console.WriteLine();
+        Console.WriteLine("\nVehicle manager");
         Console.WriteLine("1. Show all vehicles");
         Console.WriteLine("2. Generate new random list");
         Console.WriteLine("3. Sort by type");
@@ -154,40 +152,18 @@ class Application
         Console.WriteLine("5. Exit");
         var choice = Console.ReadLine();
         int x;
-        bool isNumber;
-        isNumber = int.TryParse(choice, out x);
-        return x;
+        if (int.TryParse(choice, out x)) return x;
+        return 0;
     }
-    public List<IVehicle> getRandomList(List<IVehicle> list, int n)
+    public static List<IVehicle> getRandomList(List<IVehicle> list, int n)
     {
-        return (List<IVehicle>)list.OrderBy(c => Globals.random.Next()).Take(5);
+        return (List<IVehicle>)list.OrderBy(c => Globals.random.Next()).Take(n).ToList();
     }
     public static void Main()
     {
-        //Make two lists of each type. Hardcoded instead of randomly generated in order to avoid extra complexity of matching Manufacturer to Model and having extra collections to handle that.
-        //List<GasVehicle> gasVehicles = new List<GasVehicle>();
-        //try
-        //{
-        //    gasVehicles.Add(new GasVehicle("White", "Ford", "F150", 2016, "Eight cylinders"));
-        //    gasVehicles.Add(new GasVehicle("Red", "BMW", "3 Series", 2020, "Six cylinders"));
-        //    gasVehicles.Add(new GasVehicle("Blue", "Hyundai", "Sonata", 2010, "Four cylinders"));
-        //    gasVehicles.Add(new GasVehicle("Green", "Subaru", "Impreza", 2018, "Six cylinders"));
-        //    gasVehicles.Add(new GasVehicle("Black", "Nissan", "GT-R", 2012, "Four cylinders"));
-        //    gasVehicles.Add(new GasVehicle("Yellow", "Mazda", "CX-8", 2021, "Eight cylinders"));
-        //}
-        //catch (Exception e) { Console.WriteLine(e.Message); }
-        //List<ElectricVehicle> electricVehicles = new List<ElectricVehicle>();
-        //try {
-        //    electricVehicles.Add(new ElectricVehicle("Red", "Tesla", "Model S", 2019, "Dual"));
-        //    electricVehicles.Add(new ElectricVehicle("Green", "BMW", "I3", 2020, "Single"));
-        //    electricVehicles.Add(new ElectricVehicle("Blue", "Nissan", "Leaf", 2016, "Single"));
-        //    electricVehicles.Add(new ElectricVehicle("Black", "Kia", "Soul EV", 2014, "Dual"));
-        //    electricVehicles.Add(new ElectricVehicle("White", "Chevrolet", "Spark EV", 2021, "Single"));
-        //    electricVehicles.Add(new ElectricVehicle("Yellow", "Honda", "Fit EV", 2017, "Dual"));
-        //}
-        //catch (Exception e) { Console.WriteLine(e.Message); }
+        List<IVehicle> allCars = new List<IVehicle>();      //Holds all vehicles
+        List<IVehicle> currentSelection = new List<IVehicle>();     //Holds the current random selection of vehicles for sorting
 
-        List<IVehicle> allCars = new List<IVehicle>();
         allCars.Add(new GasVehicle("White", "Ford", "F150", 2016, "Eight cylinders"));
         allCars.Add(new GasVehicle("Red", "BMW", "3 Series", 2020, "Six cylinders"));
         allCars.Add(new GasVehicle("Blue", "Hyundai", "Sonata", 2010, "Four cylinders"));
@@ -202,44 +178,61 @@ class Application
         allCars.Add(new ElectricVehicle("White", "Chevrolet", "Spark EV", 2021, "Single"));
         allCars.Add(new ElectricVehicle("Yellow", "Honda", "Fit EV", 2017, "Dual"));
 
-        Console.WriteLine(allCars[0]);
-        Console.WriteLine(allCars[1]);
-        Console.WriteLine("Test");
+        string header = String.Format("| {0,-10} | {1,-12} | {2,-10} | {3,-10} | {4,-10} | {5,-15} | {6,-10} |", "Type", "Manufacturer", "Model", "Color", "Year Built", "Motor Type", "Age");
 
-        Random random = new Random();
         int userInput = 0;
         do
         {
-            Console.WriteLine("| {0,-10} | {1,-12} | {2,-10} | {3,-10} | {4,-10} | {5,-14} | {6,-10} |", "Type", "Manufacturer", "Model", "Color", "Year Built", "Motor Type", "Age");
-            Console.WriteLine(allCars[random.Next(allCars.Count)]);
-            Console.WriteLine(allCars[random.Next(allCars.Count)]);
             userInput = Menu();
 
             switch(userInput)
             {
                 case 1:
-                    Console.WriteLine("| {0,-10} | {1,-12} | {2,-10} | {3,-10} | {4,-10} | {5,-14} | {6,-10} |", "Type", "Manufacturer", "Model", "Color", "Year Built", "Motor Type", "Age");
+                    //print all the cars in the base list
+                    Console.WriteLine(header);
                     foreach (IVehicle vehicle in allCars)
                     {
                         Console.WriteLine(vehicle);
                     }
                     break;
                 case 2:
-                    Console.WriteLine("blak");
+                    int n = 0;
+                    currentSelection.Clear();   //Empty current selection
+                    do {
+                        //user chooses the number of random cars to be put into the current selection list (3+ according to requirements)
+                        Console.WriteLine(String.Format("How many? (Between 3 and {0}", allCars.Count));
+                        var numOfCars = Console.ReadLine();
+                        int.TryParse(numOfCars, out n);
+                    } while (n < 3 || n > allCars.Count);
+                    currentSelection = getRandomList(allCars, n);
+
+                    Console.WriteLine(header);
+                    foreach (IVehicle vehicle in currentSelection)
+                    {
+                        Console.WriteLine(vehicle);
+                    }
                     break;
                 case 3:
-                    Console.WriteLine("blak");
+                    //sorts by comparing the string value of the type names then writes the list
+                    currentSelection.Sort((x, y) => string.Compare(x.GetType().Name, y.GetType().Name));
+                    Console.WriteLine(header);
+                    foreach (IVehicle vehicle in currentSelection)
+                    {
+                        Console.WriteLine(vehicle);
+                    }
                     break;
                 case 4:
-                    Console.WriteLine("blak");
+                    //sorts by manufacturer then by model
+                    currentSelection = (List<IVehicle>)currentSelection.OrderBy(a => a.Manufacturer).ThenBy(a => a.Model).ToList();
+                    Console.WriteLine(header);
+                    foreach (IVehicle vehicle in currentSelection)
+                    {
+                        Console.WriteLine(vehicle);
+                    }
                     break;
                 default:
                     break;
             }
-
-            
-            //Console.WriteLine(gasVehicles[random.Next(gasVehicles.Count)]);
-            //Console.WriteLine(electricVehicles[random.Next(electricVehicles.Count)]);
         } while (userInput != 5);
     }
 }
